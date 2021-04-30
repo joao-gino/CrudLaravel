@@ -6,8 +6,26 @@ use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
 {
-    public function inserir_produto(){
+    public function inserir_produto(Request $req){
 
+        if(empty($req->id))
+        {
+            \DB::table('produtos')->insert([
+                'nome' => $req->nome,
+                'quantidade' => $req->quantidade
+            ]);
+
+            return 'Produto cadastrado com sucesso!';
+        }
+        else
+        {
+            \DB::table('produtos')->where('id', $req->id)->update([
+                'nome' => $req->nome,
+                'quantidade' => $req->quantidade
+            ]);
+
+            return 'Produto atualizado com sucesso!';
+        }
 
     }
 

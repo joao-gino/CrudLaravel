@@ -16,3 +16,4 @@ Route::get('/', function () { return redirect(route('home')); });
 Route::get('/home', 'PageController@home')->name('home');
 Route::post('/apagar-produto', 'ProdutoController@excluir_produto')->name('apagar-produto');
 Route::post('/buscar-produto', 'ProdutoController@buscar_produto')->name('buscar-produto');
+Route::post('/inserir-produto', 'ProdutoController@inserir_produto')->name('inserir-produto');

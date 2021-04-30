@@ -56,6 +56,10 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
+            <label for="id-produto" class="col-form-label">ID do Produto:</label>
+            <input type="text" class="form-control" id="id-produto" readonly>
+          </div>
+          <div class="form-group">
             <label for="nome-produto" class="col-form-label">Nome do Produto:</label>
             <input type="text" class="form-control" id="nome-produto">
           </div>
@@ -76,9 +80,6 @@
 </html>
 <script src="{{ asset('vendor/js/jquery-351.min.js') }}"></script>
 <script src="{{ asset('vendor/js/bootstrap-452.min.js') }}"></script>
-<script src="{{ asset('vendor/js/popper.min.js') }}"></script>
-<script src="{{ asset('vendor/js/app.js') }}"></script>
-<script src="{{ asset('vendor/js/jszip.min.js') }}"></script>
 <script>
 $(document).ready(function(){
     
@@ -101,13 +102,14 @@ $(document).ready(function(){
 
         $('#nome-produto').val('');
         $('#quantidade-produto').val('');
-        var teste = $('#myTable');
-        console.log(teste);
+        var idAtual = $(this).attr('data-ref');
+
         let info = {
-            id: $(this).attr('data-ref')
+            id: idAtual
         }
 
         $.post('/buscar-produto', info).done(function(result){
+            $('#id-produto').val(idAtual);
             $('#nome-produto').val(result[0].nome);
             $('#quantidade-produto').val(result[0].quantidade);
         }).fail(function(err){
@@ -117,9 +119,26 @@ $(document).ready(function(){
     });
 
     $('#btn-cadastrar-produto').click(function(result){
+        $('#id-produto').val('');
         $('#nome-produto').val('');
         $('#quantidade-produto').val('');
     });
+
+    $('#btn-confirmar-produto').click(function(result){
+
+        let info = {
+            id: $('#id-produto').val(),
+            nome: $('#nome-produto').val(),
+            quantidade: $('#quantidade-produto').val()
+        }
+
+        $.post('/inserir-produto', info).done(function(result){
+            alert(result);
+            window.open('home', '_self');
+        }).fail(function(err){
+            console.log(err);
+        });
+    })
 
 })
 </script>
