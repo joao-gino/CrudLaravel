@@ -11,12 +11,11 @@ class ProdutoController extends Controller
 
     }
 
-    public function buscar_produto(){
+    public function buscar_produto(Request $req){
 
-        $produtos = \DB::table('produtos')->get();
+        $produtos = \DB::table('produtos')->where('id', $req->id)->get();
 
         return $produtos;
-
     }
 
     public function excluir_produto(Request $req){

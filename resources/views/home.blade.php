@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <link rel="stylesheet" href="{{ asset('vendor/css/base.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/css/style.css') }}">
     <title>CRUD</title>
@@ -27,7 +28,7 @@
                     <td>{{$p->nome}}</td>
                     <td>{{$p->quantidade}}</td>
                     <td>
-                        <button data-toggle="modal" data-target="#modalProduto" class="btn btn-primary btn-sm mr-2">Editar</button>
+                        <button data-ref="{{ $p->id }}" data-toggle="modal" data-target="#modalProduto" class="btn btn-primary btn-sm mr-2">Editar</button>
                         <button data-ref="{{ $p->id }}" id="btn-apagar-produto" class="btn btn-danger btn-sm">Apagar</button>
                     </td>
                 </tr>
@@ -38,7 +39,7 @@
 </div>
 <div class="row">
     <div class="col-md-3">
-        <button data-toggle="modal" data-target="#modalProduto" class="btn btn-success btn-sm">Cadastrar Produto</button>     
+        <button id="btn-cadastrar-produto" data-toggle="modal" data-target="#modalProduto" class="btn btn-success btn-sm">Cadastrar Produto</button>     
     </div>
 </div>
 </div>
@@ -60,7 +61,7 @@
           </div>
           <div class="form-group">
             <label for="quantidade-produto" class="col-form-label">Quantidade:</label>
-            <input type="text" class="form-control" id="quantidade-produto">
+            <input type="number" class="form-control" id="quantidade-produto">
           </div>
         </form>
       </div>
@@ -89,10 +90,43 @@ $(document).ready(function(){
 
         $.post('/apagar-produto', info).done(function(result){
             alert(result);
-            window.open('home', '__self');
+            window.open('home', '_self');
+        }).fail(function(err){
+            console.log(err);
         });
 
     });
 
+    $('#myTable').on('click','.btn-primary', function (){
+
+        $('#nome-produto').val('');
+        $('#quantidade-produto').val('');
+        var teste = $('#myTable');
+        console.log(teste);
+        let info = {
+            id: $(this).attr('data-ref')
+        }
+
+        $.post('/buscar-produto', info).done(function(result){
+            $('#nome-produto').val(result[0].nome);
+            $('#quantidade-produto').val(result[0].quantidade);
+        }).fail(function(err){
+            console.log(err);
+        });
+
+    });
+
+    $('#btn-cadastrar-produto').click(function(result){
+        $('#nome-produto').val('');
+        $('#quantidade-produto').val('');
+    });
+
 })
+</script>
+<script type="text/javascript">
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
 </script>
